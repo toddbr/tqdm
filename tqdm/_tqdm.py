@@ -12,7 +12,7 @@ Usage:
 from __future__ import division, absolute_import
 # import compatibility functions and utilities
 from ._utils import _supports_unicode, _environ_cols_wrapper, _range, _unich, \
-    _term_move_up, _unicode
+    _term_move_up, _unicode, _coroutine
 import sys
 from time import time
 
@@ -408,6 +408,20 @@ class tqdm(object):
     def __exit__(self, *exc):
         self.close()
         return False
+
+    @_coroutine
+    def __aiter__(self):
+        self.start()
+        return self
+
+    @_coroutine
+    def __anext__(self):
+        try:
+            self.update()
+            return next(self.iterable)
+        except StopIteration:
+            self.close()
+            raise StopAsyncIteration
 
     def __iter__(self):
         ''' Backward-compatibility to use: for x in tqdm(iterable) '''

@@ -122,3 +122,11 @@ def _term_move_up():  # pragma: no cover
         if colorama is None:
             return ''
     return '\x1b[A'
+
+
+try:
+    from asyncio import coroutine
+    _coroutine = coroutine
+except ImportError:
+    def _coroutine(func):
+        return func
