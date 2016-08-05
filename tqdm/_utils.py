@@ -43,6 +43,15 @@ def _is_utf(encoding):
     return encoding.lower().startswith('utf-') or ('U8' == encoding)
 
 
+def _is_ascii(s):
+    if isinstance(s, str):
+        for c in s:
+            if ord(c) > 255:
+                return False
+        return True
+    return _is_utf(getattr(s, 'encoding', 'ascii'))
+
+
 def _supports_unicode(file):
     return _is_utf(file.encoding) if (
         getattr(file, 'encoding', None) or

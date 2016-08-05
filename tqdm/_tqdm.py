@@ -13,7 +13,7 @@ from __future__ import absolute_import
 from __future__ import division
 # import compatibility functions and utilities
 from ._utils import _supports_unicode, _environ_cols_wrapper, _range, _unich, \
-    _term_move_up, _unicode, WeakSet
+    _term_move_up, _unicode, WeakSet, _is_ascii
 import sys
 from time import time
 
@@ -39,6 +39,10 @@ class TqdmDeprecationWarning(Exception):
             fp_write("\nTqdmDeprecationWarning: " + str(msg).rstrip() + '\n')
         else:
             super(TqdmDeprecationWarning, self).__init__(msg, *a, **k)
+
+
+ASCII_FMT = " 123456789#"
+UTF_FMT = u" " + u''.join(map(_unich, range(0x258F, 0x2587, -1)))
 
 
 class tqdm(object):
@@ -142,10 +146,10 @@ class tqdm(object):
             will not print any meter (only stats).
         prefix  : str, optional
             Prefix message (included in total width) [default: ''].
-        ascii  : bool, optional
+        ascii  : bool or str, optional
             If not set, use unicode (smooth blocks) to fill the meter
             [default: False]. The fallback is to use ASCII characters
-            (1-9 #).
+            " 123456789#".
         unit  : str, optional
             The iteration unit [default: 'it'].
         unit_scale  : bool, optional
@@ -252,28 +256,24 @@ class tqdm(object):
                 else 10
 
             # format bar depending on availability of unicode/ascii chars
-            if ascii:
-                bar_length, frac_bar_length = divmod(
-                    int(frac * N_BARS * 10), 10)
+            if ascii is True:
+                ascii = ASCII_FMT
+            elif ascii is False:
+                ascii = UTF_FMT
+            nsyms = len(ascii) - 1
+            bar_length, frac_bar_length = divmod(
+                    int(frac * N_BARS * nsyms), nsyms)
 
-                bar = '#' * bar_length
-                frac_bar = chr(48 + frac_bar_length) if frac_bar_length \
-                    else ' '
-
-            else:
-                bar_length, frac_bar_length = divmod(int(frac * N_BARS * 8), 8)
-
-                bar = _unich(0x2588) * bar_length
-                frac_bar = _unich(0x2590 - frac_bar_length) \
-                    if frac_bar_length else ' '
+            bar = ascii[-1] * bar_length
+            frac_bar = ascii[frac_bar_length]
 
             # whitespace padding
             if bar_length < N_BARS:
                 full_bar = bar + frac_bar + \
-                    ' ' * max(N_BARS - bar_length - 1, 0)
+                    ascii[0] * (N_BARS - bar_length - 1)
             else:
                 full_bar = bar + \
-                    ' ' * max(N_BARS - bar_length, 0)
+                    ascii[0] * (N_BARS - bar_length)
 
             # Piece together the bar parts
             return l_bar + full_bar + r_bar
@@ -470,9 +470,10 @@ class tqdm(object):
         miniters  : int, optional
             Minimum progress update interval, in iterations.
             If specified, will set `mininterval` to 0.
-        ascii  : bool, optional
+        ascii  : bool or str, optional
             If unspecified or False, use unicode (smooth blocks) to fill
-            the meter. The fallback is to use ASCII characters `1-9 #`.
+            the meter.
+            The fallback is to use ASCII characters " 123456789#".
         disable  : bool, optional
             Whether to disable the entire progressbar wrapper
             [default: False].
@@ -561,7 +562,7 @@ class tqdm(object):
         if ascii is None:
             ascii = not _supports_unicode(file)
 
-        if bar_format and not ascii:
+        if bar_format and not ((ascii is True) or _is_ascii(ascii)):
             # Convert bar format into unicode since terminal uses unicode
             bar_format = _unicode(bar_format)
 
