@@ -268,9 +268,10 @@ Parameters
 * miniters  : int, optional  
     Minimum progress update interval, in iterations.
     If specified, will set `mininterval` to 0.
-* ascii  : bool, optional  
+* ascii  : bool or str, optional  
     If unspecified or False, use unicode (smooth blocks) to fill
-    the meter. The fallback is to use ASCII characters `1-9 #`.
+    the meter.
+    The fallback is to use ASCII characters " 123456789#".
 * disable  : bool, optional  
     Whether to disable the entire progressbar wrapper
     [default: False].
