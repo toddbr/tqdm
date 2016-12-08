@@ -102,11 +102,11 @@ class TMonitor(Thread):
             for instance in self.tqdm_cls._instances:
                 # Only if mininterval > 1 (else iterations are just slow)
                 # and last refresh was longer than maxinterval in this instance
-                if instance.miniters > 1 and \
+                if instance.miniters is not None and \
                   (cur_t - instance.last_print_t) >= instance.maxinterval:
                     # We force bypassing miniters on next iteration
                     # dynamic_miniters should adjust mininterval automatically
-                    instance.miniters = 1
+                    instance.miniters = 0
                     # Refresh now! (works only for manual tqdm)
                     instance.refresh()
 
