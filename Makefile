@@ -1,6 +1,7 @@
 # IMPORTANT: for compatibility with `python setup.py make [alias]`, ensure:
 # 1. Every alias is preceded by @[+]make (eg: @make alias)
 # 2. A maximum of one @make alias or command per line
+# 3. Only use tabs, not spaces to indent (compatibility with linux make)
 #
 # Sample makefile compatible with `python setup.py make`:
 #```
@@ -70,11 +71,13 @@ testperf:  # do not use coverage (which is extremely slow)
 testtimer:
 	nosetests tqdm --with-timer -d -v
 
-testasv:
+testasv:  # another performance test, to check evolution across commits
+	# Test only the last 3 commits (quick test)
 	asv run -j 8 HEAD~3..HEAD
 	@make viewasv
 
 testasvfull:
+	# Test all the commits since the beginning (full test)
 	asv run -j 8 v1.0.0..master
 	@make testasv
 
