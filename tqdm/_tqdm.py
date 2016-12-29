@@ -396,7 +396,7 @@ class tqdm(object):
     def __new__(cls, *args, **kwargs):
         # Create default lock if none set
         if "_lock" not in cls.__dict__:
-            cls._lock = TqdmDefaultWriteLock()
+            cls.set_lock(TqdmDefaultWriteLock())
         # Create a new instance
         instance = object.__new__(cls)
         # Add to the list of instances
