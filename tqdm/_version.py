@@ -1,11 +1,6 @@
 # Definition of the version number
-try:
-    from ._utils import _sh
-except:  # pragma: no cover
-    _sh = None
-import os, sys, inspect
+import os
 
-from subprocess import STDOUT
 __all__ = ["__version__"]
 
 # major, minor, patch, -extra
