@@ -13,7 +13,7 @@ __version__ = '.'.join(map(str, version_info))
 # auto -extra based on commit hash (if not tagged as release)
 res = None
 scriptdir = os.path.dirname(__file__)
-gitdir = os.path.abspath(scriptdir+'/../.git')
+gitdir = os.path.abspath(scriptdir + '/../.git')
 if os.path.isdir(gitdir):
     # Open the HEAD file
     with open(os.path.join(gitdir,'HEAD'), 'r') as fh_head:
@@ -41,5 +41,5 @@ if os.path.isdir(gitdir):
     else:
         res = res[:8]
     # Append to version string
-    if res:
+    if res is not None:
         __version__ += '-' + res
