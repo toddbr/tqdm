@@ -1,0 +1,28 @@
+{
+    "regressions": [
+        [
+            "benchmarks.FractionalOverheadSuite.track_tqdm", 
+            "graphs/arch-x86_64/branch-master/cpu-Intel(R) Core(TM) i5-4310M CPU @ 2.70GHz/machine-cosmos-buntu/os-Linux 3.13.0-100-generic/python-2.7/ram-8058600/benchmarks.FractionalOverheadSuite.track_tqdm.json", 
+            {}, 
+            null, 
+            [
+                [
+                    [
+                        null, 
+                        267, 
+                        3.9403222053408893, 
+                        5.46139890831597
+                    ], 
+                    [
+                        null, 
+                        636, 
+                        5.005180215322204, 
+                        6.073950488538196
+                    ]
+                ], 
+                6.073950488538196, 
+                3.9403222053408893
+            ]
+        ]
+    ]
+}
